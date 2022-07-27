@@ -1,0 +1,50 @@
+#!/bin/sh
+
+#lsof -p $pids
+function showps () {
+    show_net_process
+}
+
+show_net_process ()
+{
+    local pid_file=$(pwd)/pid
+    netstat -vanp tcp | awk 'NR > 2 {print $9}' | sed 'H;1h;$!d;x;y/\n/,/' > $pid_file;
+    local pids=$(cat $pid_file)
+    ps -p $pids
+    rm $pid_file
+}
+
+show_tcp_process ()
+{
+    local netstat_file=$(pwd)/netstat.log
+    netstat -vanp tcp > $netstat_file
+    n=0
+    local filename=$netstat_file
+    local net_ps_file=$(pwd)/netps.log
+    if test -f $net_ps_file
+    then
+        rm $net_ps_file
+    fi
+    while read line; do
+        # reading each line
+        local line_file=$(pwd)/oneline
+        echo "Line No.$n:"
+        if [ $n -gt 1 ]
+        then
+            echo "$line" | awk '{print $1, $4, $5, $6, $9, $10}'
+            echo "$line" | awk '{print $1, $4, $5, $6, $9, $10}' > $line_file
+            pid=$(awk '{print $5}' $line_file)
+            #pid=$(echo "$line" | awk '{print $9}')
+            #echo "pid: $pid"
+            ps -p $pid | awk '{if(NR>1) print $4}'
+            rm $line_file
+        else
+            echo $line
+        fi
+        n=$((n+1))
+    done < $filename
+    
+    rm $netstat_file
+}
+
+show_tcp_process
