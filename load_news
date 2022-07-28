@@ -1,0 +1,8 @@
+#!/bin/sh
+
+file=$(pwd)/$(date +'%F %R')
+curl -sL https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc -o "$file"
+
+echo "loading $(date) new complete."
+
+cat "$file" | python -m json.tool 
