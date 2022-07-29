@@ -11,4 +11,14 @@ echo "loading $(date) new complete."
 
 #cat "$file" | python -m json.tool 
 
-cat "$file" | python3 -c "import sys, json; list=json.load(sys.stdin)['data']; [print(i['Title']) for i in list];"
+echo "args : $1"
+if [ $1 == "-v" ]
+then
+
+cat "$file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(i['Title']+'\n'+i['Url']) for i in list];"
+
+else
+
+cat "$file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(i['Title']) for i in list];"
+
+fi
