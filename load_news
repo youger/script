@@ -11,3 +11,4 @@ echo "loading $(date) new complete."
 
 #cat "$file" | python -m json.tool 
 
+cat "$file" | python3 -c "import sys, json; list=json.load(sys.stdin)['data']; [print(i['Title']) for i in list];"
