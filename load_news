@@ -1,28 +1,32 @@
 #!/bin/sh
 
+silent=0
+verbose=0
+while getopts sv option
+do case "${option}" in
+    s) silent=1;;
+    v) verbose=1;;
+    [?])  echo "Usage: $0 [-s silent without output] [-v verbose with detail link] ..."
+    esac
+done
+
 news_dir=$HOME/news
 if [[ ! -d $news_dir ]]
 then
     mkdir -p "$news_dir"
 fi
 news_in_hours=$news_dir/$(date +'%F')*
-rm $news_in_hours
+rm $news_in_hours >/dev/null 2>&1 3>&1
 
 news_file=$news_dir/$(date +'%F %R')
 curl -sL https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc -o "$news_file"
 
-echo "loading $(date) news complete."
-
 #cat "$news_file" | python -m json.tool 
 
-#echo "args : $1"
-#if [[ $1 == "-v" ]]
-#then
-#
-#    cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i)+'.'+list[i]['Title']+'\n'+list[i]['Url']) for i in range(len(list))];"
-#
-#else
-#
-#    cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i)+'.'+list[i]['Title']) for i in range(len(list))];"
-#
-#fi
+if [ $silent == 1 ]; then
+    echo "loading $(date) news complete."
+elif [ $verbose == 1 ]; then
+    cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']+'\n'+list[i]['Url']) for i in range(len(list))];"
+else
+    cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']) for i in range(len(list))];"
+fi
