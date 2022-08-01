@@ -19,10 +19,10 @@ echo "args : $1"
 if [[ $1 == "-v" ]]
 then
 
-cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(i['Title']+'\n'+i['Url']) for i in list];"
+    cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i)+'.'+list[i]['Title']+'\n'+list[i]['Url']) for i in range(len(list))];"
 
 else
 
-cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(i['Title']) for i in list];"
+    cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i)+'.'+list[i]['Title']) for i in range(len(list))];"
 
 fi
