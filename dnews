@@ -4,7 +4,7 @@ news_dir=$HOME/news
 news_file=
 load_news()
 {
-    if [[ ! -d $news_dir ]]
+    if [ ! -d $news_dir ]
     then
         mkdir -p "$news_dir"
     fi
@@ -18,13 +18,19 @@ load_news()
 }
 
 verbose=0
-while getopts fv option
+while getopts fvi: option
 do case "${option}" in
-    f) load_news;;
-    v) verbose=1;;
+    f) load_news
+       shift;;
+    v) verbose=1
+       shift;;
+    i) seq=${OPTARG};;
     [?])  echo "Usage: $0 [-f force refresh] [-v verbose] ..."
     esac
 done
+
+seq=$1
+#echo "verbose $verbose seq $seq $1"
 
 find_news_file()
 {
@@ -33,14 +39,11 @@ find_news_file()
     news_file=$news_dir/$news_file
 }
 
-seq=$1
-function show_news_detail()
+show_news_detail()
 {
-    if [ "$seq" != "" ] && [ "$seq" -eq "$seq" ]
-    then
+    if [ "$seq" != "" ] && [ "$seq" -eq "$seq" ] 2>/dev/null; then
         cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']+'\n'+list[i]['Url']) for i in range(len(list))];" | grep -A 1 "^$seq\."
-    elif [ $verbose == 1 ]
-    then
+    elif [ $verbose == 1 ]; then
         cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']+list[i]['Url']) for i in range(len(list))];"
     else 
         cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']) for i in range(len(list))];"
