@@ -1,24 +1,28 @@
 #!/bin/sh
 
-news_dir=$(pwd)
+news_dir=$HOME/news
+if [[ ! -d $news_dir ]]
+then
+    mkdir -p "$news_dir"
+fi
 news_in_hours=$news_dir/$(date +'%F')*
 rm $news_in_hours
 
-file=$news_dir/$(date +'%F %R')
-curl -sL https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc -o "$file"
+news_file=$news_dir/$(date +'%F %R')
+curl -sL https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc -o "$news_file"
 
-echo "loading $(date) new complete."
+echo "loading $(date) news complete."
 
-#cat "$file" | python -m json.tool 
+#cat "$news_file" | python -m json.tool 
 
 echo "args : $1"
-if [ $1 == "-v" ]
+if [[ $1 == "-v" ]]
 then
 
-cat "$file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(i['Title']+'\n'+i['Url']) for i in list];"
+cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(i['Title']+'\n'+i['Url']) for i in list];"
 
 else
 
-cat "$file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(i['Title']) for i in list];"
+cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(i['Title']) for i in list];"
 
 fi
