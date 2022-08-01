@@ -1,0 +1,27 @@
+#!/bin/sh
+
+news_dir=$HOME/news
+news_file=$(ls "$news_dir" | grep "$(date +'%F')*")
+echo "find today news: $news_file"
+
+seq=$1
+function show_news_detail()
+{
+    if [ "$seq" != "" ]
+    then
+        cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']+'\n'+list[i]['Url']) for i in range(len(list))];" | grep -A 1 "^$seq\."
+    else
+        cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']) for i in range(len(list))];"
+    fi
+}
+
+news_file=$news_dir/$news_file
+if test -f "$news_file"
+then
+    echo "open $news_file"
+    show_news_detail    
+else
+    sh ./load_news
+fi
+
+
