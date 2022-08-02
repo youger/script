@@ -2,13 +2,14 @@
 
 news_dir=$HOME/news
 news_file=
+current_day=$(date +'%F')
 load_news()
 {
     if [ ! -d $news_dir ]
     then
         mkdir -p "$news_dir"
     fi
-    local news_in_hours=$news_dir/$(date +'%F')*
+    local news_in_hours="$news_dir/$current_day"*
     rm $news_in_hours > /dev/null 2>&1 3>&1
 
     news_file=$news_dir/$(date +'%F %R')
@@ -34,9 +35,9 @@ seq=$1
 
 find_news_file()
 {
-    news_file=$(ls "$news_dir" | grep "$(date +'%F')*")
+    news_file=$(ls "$news_dir" | grep "$current_day *")
     echo "find today news: $news_file"
-    news_file=$news_dir/$news_file
+    news_file="$news_dir/$news_file"
 }
 
 show_news_detail()
