@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#echo "args:$# $*" 
+
 news_dir=$HOME/news
 news_file=
 current_day=$(date +'%F')
@@ -22,16 +24,21 @@ verbose=0
 while getopts fvi: option
 do case "${option}" in
     f) load_news
-       shift;;
+       ;;
     v) verbose=1
-       shift;;
-    i) seq=${OPTARG};;
-    [?])  echo "Usage: $0 [-f force refresh] [-v verbose] ..."
+       ;;
+    i) seq=${OPTARG}
+       ;;
+    [?]) echo "Usage: $0 [-f force refresh] [-v verbose] ..."
     esac
 done
 
-seq=$1
-#echo "verbose $verbose seq $seq $1"
+shift $((OPTIND-1))
+
+if [ -z $seq ]; then 
+    seq=$1
+fi
+#echo "args:$# $* verbose $verbose seq $seq $1"
 
 find_news_file()
 {
@@ -40,14 +47,26 @@ find_news_file()
     news_file="$news_dir/$news_file"
 }
 
-show_news_detail()
+format_news()
 {
-    if [ "$seq" != "" ] && [ "$seq" -eq "$seq" ] 2>/dev/null; then
-        cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']+'\n'+list[i]['Url']) for i in range(len(list))];" | grep -A 1 "^$seq\."
-    elif [ $verbose == 1 ]; then
+    if [ $1 == 1 ]; then
         cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']+list[i]['Url']) for i in range(len(list))];"
     else 
         cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']) for i in range(len(list))];"
+    fi
+}
+
+show_news_detail()
+{
+    local pattern="$seq"
+    if [ "$seq" -eq "$seq" ] 2>/dev/null; then
+        verbose=1
+        pattern="^$seq\."
+    fi
+    if [ "$pattern" != "" ] 2>/dev/null; then
+        format_news $verbose | grep "$pattern"
+    else
+        format_news $verbose
     fi
 }
 
