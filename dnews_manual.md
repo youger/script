@@ -1,6 +1,7 @@
 copy this line to .profile
 ```
 export PATH=$PATH:your_path/script/dnews
+alias tt=dnews
 ```
 
 # SYNOPSIS
