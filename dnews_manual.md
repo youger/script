@@ -1,5 +1,7 @@
-//copy to .profile
-    export PATH=$PATH:your_path/script/dnews
+copy this line to .profile
+```
+export PATH=$PATH:your_path/script/dnews
+```
 
 # SYNOPSIS
     dnews [-fv] [-i number] [pattern]
