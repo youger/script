@@ -49,7 +49,7 @@ find_news_file()
 
 format_news()
 {
-    if [ $1 == 1 ]; then
+    if [ $1 = 1 ]; then
         cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']+'\n'+list[i]['Url']) for i in range(len(list))];"
     else 
         cat "$news_file" | python3 -c "import sys, json, string; list=json.load(sys.stdin)['data']; [print(str(i+1)+'.'+list[i]['Title']) for i in range(len(list))];"
@@ -64,7 +64,7 @@ show_news_detail()
         pattern="^$seq\."
     fi
     local cxt=
-    if [ $verbose == 1 ] 2>/dev/null;then
+    if [ $verbose = 1 ] 2>/dev/null;then
         cxt="-A 1"
     fi
     if [ "$pattern" != "" ] 2>/dev/null; then
