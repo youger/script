@@ -1,10 +1,10 @@
-## copy to .profile
-export PATH=$PATH:your_path/script/dnews
+//copy to .profile
+    export PATH=$PATH:your_path/script/dnews
 
-#SYNOPSIS
+# SYNOPSIS
     dnews [-fv] [-i number] [pattern]
 
-#EXAMPLES
+# EXAMPLES
 
     Display specific index of news
 
