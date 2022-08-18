@@ -1,13 +1,16 @@
 #!/bin/sh
 
 #lsof -p $pids
+
+temp_dir="/tmp"
+
 function showps () {
     show_net_process
 }
 
 show_net_process ()
 {
-    local pid_file=$(pwd)/pid
+    local pid_file=$temp_dir/pid
     netstat -vanp tcp | awk 'NR > 2 {print $9}' | sed 'H;1h;$!d;x;y/\n/,/' > $pid_file;
     local pids=$(cat $pid_file)
     ps -p $pids
@@ -16,18 +19,18 @@ show_net_process ()
 
 show_tcp_process ()
 {
-    local netstat_file=$(pwd)/netstat.log
+    local netstat_file=$temp_dir/netstat.log
     netstat -vanp tcp > $netstat_file
     n=0
     local filename=$netstat_file
-    local net_ps_file=$(pwd)/netps.log
+    local net_ps_file=$temp_dir/netps.log
     if test -f $net_ps_file
     then
         rm $net_ps_file
     fi
     while read line; do
         # reading each line
-        local line_file=$(pwd)/oneline
+        local line_file=$temp_dir/oneline
         echo "Line No.$n:"
         if [ $n -gt 1 ]
         then
