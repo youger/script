@@ -5,6 +5,7 @@
 news_dir=$HOME/news
 news_file=
 current_day=$(date +'%F')
+is_history=0
 load_news()
 {
     if [ ! -d $news_dir ]
@@ -21,14 +22,17 @@ load_news()
 }
 
 verbose=0
-while getopts fvi: option
+while getopts fvd:i: option
 do case "${option}" in
     f) load_news
-       ;;
+        ;;
     v) verbose=1
-       ;;
+        ;;
+    d) current_day=${OPTARG}
+       is_history=1
+        ;; 
     i) seq=${OPTARG}
-       ;;
+        ;;
     [?]) echo "Usage: $0 [-f force refresh] [-v verbose] ..."
     esac
 done
@@ -42,8 +46,9 @@ fi
 
 find_news_file()
 {
-    news_file=$(ls "$news_dir" | grep "$current_day *")
-    echo "find today news: $news_file"
+    echo "$current_day"
+    news_file=$(ls "$news_dir" | grep -m 1 "$current_day *")
+    echo "find day news: '$news_file'"
     news_file="$news_dir/$news_file"
 }
 
