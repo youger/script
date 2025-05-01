@@ -34,8 +34,8 @@ show_tcp_process ()
         echo "Line No.$n:"
         if [ $n -gt 1 ]
         then
-            echo "$line" | awk '{print $1, $4, $5, $6, $9, $10}'
-            echo "$line" | awk '{print $1, $4, $5, $6, $9, $10}' > $line_file
+            echo "$line" | awk '{print $1, $4, $5, $6, $11, $12}'
+            echo "$line" | awk '{print $1, $4, $5, $6, $11, $12}' > $line_file
             pid=$(awk '{print $5}' $line_file)
             #pid=$(echo "$line" | awk '{print $9}')
             #echo "pid: $pid"
